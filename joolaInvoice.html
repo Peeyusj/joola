@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tax Invoice</title>
     <style>
+      :root {
+        --primary-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        --header-bg: #e9e9e9;
+      }
+
       /* Basic reset and A4 page setup */
       body {
-        font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+        font-family: var(--primary-font);
         font-size: 12px;
         line-height: 1.4;
         color: #333;
@@ -131,7 +136,7 @@
       }
 
       .address-header {
-        background-color: #e9e9e9;
+        background-color: var(--header-bg);
         padding: 2px 8px;
         font-weight: bold;
         text-align: left;
@@ -167,16 +172,20 @@
         padding: 4px;
         vertical-align: middle;
         font-size: 9.5px;
-        background-color: #e9e9e9;
+        background-color: var(--header-bg);
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
 
       .items-table tbody td {
-        /* padding: 4px; */
-        border-bottom: 1px solid #e0e0e0;
+        padding: 2px;
+        border-bottom: 1px solid var(--header-bg);
         vertical-align: top;
         font-size: 9px;
+        overflow-wrap: break-word;
+        /* Great for long text without spaces */
+        word-break: break-all;
+        /* More aggressive breaking if needed */
       }
 
       .items-table .text-right {
@@ -190,14 +199,14 @@
       .items-table thead .igst-header {
         text-align: center;
         padding: 0px;
-        background-color: #e9e9e9;
+        background-color: var(--header-bg);
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
 
       .items-table thead .igst-subheader th {
         border-top: 1px solid #000;
-        background-color: #e9e9e9;
+        background-color: var(--header-bg);
         padding: 0px 2px;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
@@ -221,7 +230,7 @@
       }
 
       .total-in-words {
-        background-color: #e9e9e9;
+        background-color: var(--header-bg);
         padding: 8px;
         font-weight: bold;
         font-size: 11px;
@@ -252,7 +261,7 @@
       .summary-totals .total-row td {
         font-weight: bold;
         padding: 5px;
-        background-color: #e9e9e9;
+        background-color: var(--header-bg);
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
@@ -331,6 +340,27 @@
         font-weight: bold;
       }
 
+      .master-layout-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      /* This tells the browser/PDF renderer how to handle the header and footer */
+      .master-layout-table thead,
+      .master-layout-table tfoot {
+        display: table-header-group;
+      }
+
+      .header-content,
+      .footer-content {
+        /* You might need to set a fixed height for your header/footer */
+        /* to prevent the main content from overlapping. */
+        /* Example: height: 100mm; */
+      }
+
+      /* Remove the manual second page completely */
+      /* DELETE this from your HTML: <div style="margin-top: 50px;"> ... </div> */
+
       /* --- Print-specific styles --- */
       @media print {
         body {
@@ -353,7 +383,7 @@
         .summary-totals .total-row td {
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
-          background-color: #e9e9e9 !important;
+          background-color: var(--header-bg) !important;
         }
       }
     </style>
@@ -362,7 +392,7 @@
   <body>
     <div class="invoice-box">
       <!-- Top Section Table -->
-       <!-- TODO:: This is header block which needs to repeat in every page   -->
+      <!-- TODO:: This is header block which needs to repeat in every page   -->
       <table class="layout-table">
         <tr>
           <!-- Col 1: Logo & Company Address -->
@@ -570,14 +600,14 @@
             <th rowspan="2" style="width: 35px">Qty</th>
             <th rowspan="2" style="width: 35px">UOM</th>
             <th rowspan="2" class="text-right" style="width: 80px">MSRP</th>
-            <th rowspan="2" class="text-right" style="width: 80px">
-              Taxable Value
-            </th>
             <th rowspan="2" class="text-right" style="width: 60px">
               Discount Rate
             </th>
             <th rowspan="2" class="text-right" style="width: 60px">
               Discount Amount
+            </th>
+            <th rowspan="2" class="text-right" style="width: 80px">
+              Taxable Value
             </th>
             <th colspan="2" class="igst-header">CGST</th>
             <th colspan="2" class="igst-header">SGST</th>
@@ -606,9 +636,9 @@
             <td class="text-center">1</td>
             <td class="text-center">PC</td>
             <td class="text-right">₹ 15,428.14</td>
-            <td class="text-right">₹ 15,428.14</td>
             <td class="text-right">-10%</td>
             <td class="text-right">₹ -1,542.81</td>
+            <td class="text-right">₹ 15,428.14</td>
             <td class="text-right">12%</td>
             <td class="text-right">₹ 1,666.24</td>
             <td class="text-right">12%</td>
@@ -625,7 +655,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td class="text-right">₹ 0.00</td>
+            <td></td>
             <td class="text-right">₹ 0.00</td>
             <td></td>
             <td></td>
@@ -804,11 +834,11 @@
         </tr>
       </table>
 
-      <!-- TODO:: putting second page directly inside here and including "margin-top: 50px;s" for showing UI remove it when header footer repeating feature included -->
+      <!-- TODO:: putting second page directly inside here and including "margin-top: 50px;s" for showing UI in next page remove it when header footer repeating feature included -->
       <!-- Second Page -->
-      <div style="margin-top: 50px;">
+      <div style="margin-top: 50px">
         <!-- Top Section Table (Same as first page) -->
-          <!-- TODO:: this should not be hardcoded just needs to repeat header and footer in all pages by itself -->
+        <!-- TODO:: this should not be hardcoded just needs to repeat header and footer in all pages by itself -->
         <table class="layout-table">
           <tr>
             <!-- Col 1: Logo & Company Address -->
