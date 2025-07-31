@@ -3,99 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOOLA Shipping Label - 3x2 Inch Template</title>
+    <title>JOOLA Shipping Label - 3in x 2in</title>
     <style>
         /*
-         * This template is designed for a 3x2 inch physical label.
-         * Units are in 'in' (inches) and 'pt' (points) for print accuracy.
-         * 1 inch = 72 points.
-        */
+         * ===================================================================
+         * JOOLA SHIPPING LABEL TEMPLATE (3in x 2in) - PRINT-OPTIMIZED VERSION
+         * ===================================================================
+         */
+
+        /* --- Basic Setup --- */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f0f0f0; 
         }
+
+        /* --- Label Container --- */
         .label-container {
             width: 3in;
             height: 2in;
-            padding: 0.1in; /* Small padding around the label */
+            padding: 4.5mm;
             box-sizing: border-box;
-            overflow: hidden; /* Hide anything that overflows the label size */
+            overflow: hidden;
+            background-color: #fff;
+            position: absolute;
+            top: 20px;
+            left: 20px;
         }
+
+        /* --- Main Layout Table --- */
         .main-table {
             width: 100%;
             height: 100%;
             border-collapse: collapse;
         }
+
+        /* --- Column Styles --- */
         .left-column {
             width: 60%;
-            padding-right: 0.1in;
+            padding-right: 2.5mm;
             vertical-align: top;
-            border-right: 1px solid #ccc;
+            border-right: 1px solid #000;
         }
+
         .right-column {
             width: 40%;
-            padding-left: 0.1in;
+            padding-left: 2.5mm;
             vertical-align: top;
+            text-align: center;
         }
         
-        /* Typography scaled down for the small label size */
-        h1 {
-            font-size: 9pt;
-            margin: 0 0 5pt 0;
+        /* --- Typography --- */
+        .title {
+            font-family: 'Times New Roman', Times, serif;
             font-weight: bold;
+            font-size: 7pt;
+            margin: 8pt 0 3pt 0;
+            text-align: left;
         }
+
         p {
-            margin: 2pt 0;
-            font-size: 7pt; /* Small font size for details */
+            margin: 1.5pt 0;
+            font-size: 5pt;
             line-height: 1.2;
+            text-align: left;
         }
-        .mrp {
+
+        .mrp-price {
             font-weight: bold;
-            font-size: 8pt;
+            font-style: italic;
         }
+
         .importer-info {
             font-weight: bold;
         }
+        
+        .taxes-info {
+             font-size: 4pt;
+        }
 
-        /* Image styles adjusted for the smaller container */
+        /* --- Image and Logo Styles --- */
         .barcode-img {
             width: 100%;
-            max-width: 1.1in; /* Control barcode size */
-            margin-bottom: 8pt;
+            max-width: 28mm;
         }
+
         .logo-img {
-            max-width: 0.8in;
-            margin-top: 8pt; /* Space above the logo */
+            max-width: 22mm;
+            margin-top: 4pt;
         }
         
-        /* Styles for the nested contact info table */
+        /* --- Contact Info Table --- */
         .contact-table {
             width: 100%;
             border-collapse: collapse;
-        }
-        .contact-table td {
-            padding: 1pt 0;
-            font-size: 7pt;
-        }
-        .contact-label {
-            width: 0.6in; /* Fixed width for labels */
-            font-weight: normal;
+            text-align: left;
+            font-size: 5.5pt;
         }
 
-        /* Print-specific styles */
+        .contact-table td {
+            padding: 1pt 0;
+            vertical-align: top;
+        }
+
+        .contact-label {
+            width: 15mm; 
+        }
+
+        /* --- CRITICAL PRINT STYLES --- */
+        @page {
+            size: 3in 2in;
+            margin: 0;
+        }
+
         @media print {
-            body {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body { 
+                background-color: transparent;
+                margin: 0;
+                padding: 0;
                 width: 3in;
                 height: 2in;
             }
+            
             .label-container {
+                position: static;
+                margin: 0;
+                padding: 4.5mm;
                 width: 3in;
                 height: 2in;
-                padding: 0.1in;
-                margin: 0;
-                border: none; /* No border for printing */
-                page-break-after: always; /* Each label on a new page */
+                border: none;
+                page-break-after: always;
+                box-sizing: border-box;
             }
         }
     </style>
@@ -105,49 +150,48 @@
     <div class="label-container">
         <table class="main-table">
             <tr>
-                <!-- Left Column: Contains all product details -->
                 <td class="left-column">
-                    <h1>Joola Pickleball Paddles</h1>
-                    <p><strong>Model:</strong> Ben Johns Hyperion CAS 13.5mm</p>
-                    <p class="mrp">MRP Rs.15419.00 <span style="font-weight:normal; font-size: 6pt;">(incl. of all taxes)</span></p>
-                    <p><strong>Size/Color:</strong> -</p>
-                    <p><strong>Item SKU:</strong> 18501</p>
-                    <p><strong>Quantity:</strong> 1 PCS</p>
-                    <p><strong>Country of Origin:</strong> China</p>
-                    <p><strong>Month & Year of Import:</strong> Nov-24</p>
+                    <p class="title">Joola Pickleball Paddles</p>
+                    <p>Model : Ben Johns Hyperion CAS 13.5mm</p>
+                    <p>MRP <span class="mrp-price">Rs.15419.00</span> <span class="taxes-info">(inclusive of all taxes)</span></p>
+                    <p>Size / Color : -</p>
+                    <p>Item SKU : 18501</p>
+                    <p>Quantity : 1 PCS</p>
+                    <p>Country of Origin : China</p>
+                    <p>Month and Year of Import : Nov-24</p>
                     <p>
-                        <strong>Importer:</strong> <span class="importer-info">JOOLA India Private Limited</span><br>
-                        L-148, 5th Main Road, Sector 6, HSR Layout, Bengaluru, Karnataka, 560102, India
+                        <span style="font-weight: bold;">Importer :</span> <span class="importer-info">JOOLA India Private Limited</span><br>
+                        <span style="margin-left: 9mm; display: inline-block;">L-148, 5th Main Road, Sector 6,</span><br>
+                        <span style="margin-left: 9mm; display: inline-block;">HSR Layout, Bengaluru,</span><br>
+                        <span style="margin-left: 9mm; display: inline-block;">Karnataka, 560102, India</span>
                     </p>
                 </td>
 
-                <!-- Right Column: Contains barcode, contact info, and logo -->
                 <td class="right-column">
-                    <!-- Barcode Image -->
-                    <img src="https://i.imgur.com/gK9Lg1X.png" alt="Barcode 8909417000325" class="barcode-img">
+                    <img src="./assets/barcodeImages.png" alt="Barcode" class="barcode-img">
                     
-                    <!-- Nested table for contact information -->
                     <table class="contact-table">
                         <tr>
-                            <td class="contact-label">Customer Care:</td>
+                            <td class="contact-label">Customer Care :</td>
                             <td>+91 8088191910</td>
                         </tr>
                         <tr>
-                            <td class="contact-label">Email:</td>
+                            <td class="contact-label">Email :</td>
                             <td>care@joola.in</td>
                         </tr>
                         <tr>
-                            <td class="contact-label">Website:</td>
+                            <td class="contact-label">Website :</td>
                             <td>www.joola.in</td>
                         </tr>
                     </table>
                     
-                    <!-- JOOLA Logo -->
-                    <img src="./assets/Screenshot 2025-07-28 111039.png" alt="JOOLA Logo" class="logo-img">
+                    <img src="./assets/joolaTextLogo.png" alt="JOOLA Logo" class="logo-img">
                 </td>
             </tr>
         </table>
     </div>
+
+
 
 </body>
 </html>
