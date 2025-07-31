@@ -340,26 +340,6 @@
         font-weight: bold;
       }
 
-      .master-layout-table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      /* This tells the browser/PDF renderer how to handle the header and footer */
-      .master-layout-table thead,
-      .master-layout-table tfoot {
-        display: table-header-group;
-      }
-
-      .header-content,
-      .footer-content {
-        /* You might need to set a fixed height for your header/footer */
-        /* to prevent the main content from overlapping. */
-        /* Example: height: 100mm; */
-      }
-
-      /* Remove the manual second page completely */
-      /* DELETE this from your HTML: <div style="margin-top: 50px;"> ... </div> */
 
       /* --- Print-specific styles --- */
       @media print {
@@ -393,6 +373,7 @@
     <div class="invoice-box">
       <!-- Top Section Table -->
       <!-- TODO:: This is header block which needs to repeat in every page   -->
+      <!-- header start -->
       <table class="layout-table">
         <tr>
           <!-- Col 1: Logo & Company Address -->
