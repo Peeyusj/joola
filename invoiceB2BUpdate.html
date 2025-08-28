@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tax Invoice</title>
+    <style>
+      :root {
+        --primary-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        --header-bg: #e9e9e9;
+      }
+
+      /* Basic reset and A4 page setup */
+      body {
+        font-family: var(--primary-font);
+        font-size: 12px;
+        line-height: 1.4;
+        color: #333;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* The main container for the invoice */
+      .invoice-box {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 10mm;
+        background: #fff;
+      }
+
+      /* Main layout tables */
+      .layout-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+
+      .layout-table td {
+        padding: 0;
+        vertical-align: top;
+        overflow-wrap: break-word;
+      }
+
+      /* --- Top Section: Logo, Addresses, Title --- */
+      .logo {
+        width: 84px;
+        height: auto;
+      }
+
+      .company-details p,
+      .contact-details p {
+        margin: 0;
+        line-height: 1.1;
+      }
+
+      .company-details .company-name {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+
+      .contact-details {
+        padding-left: 20px;
+      }
+
+      .invoice-title-cell {
+        text-align: right;
+        vertical-align: middle !important;
+      }
+
+      .invoice-title {
+        font-weight: bold;
+        color: #333333;
+        margin: 0;
+        padding-bottom: 5px;
+      }
+
+      /* --- Divider --- */
+      .divider {
+        border-bottom: 1.5px solid #d9d9d9;
+        margin: 16px 0;
+      }
+
+      /* --- Middle Section: Invoice Info, Customer Info, etc. --- */
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .info-table td {
+        padding: 1px 5px 1px 0;
+      }
+
+      .info-table .label {
+        font-weight: bold;
+        width: 110px;
+      }
+
+      .checkbox-container {
+        font-size: 11px;
+        padding-left: 20px;
+      }
+
+      .checkbox-container p {
+        margin: 0 0 8px 0;
+      }
+
+      .checkbox-container span.checkbox {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border: 1px solid #888;
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+
+      .customer-info-block {
+        padding-top: 20px;
+      }
+
+      .return-address-block {
+        padding-top: 20px;
+        padding-left: 20px;
+      }
+
+      .return-address-block p {
+        margin: 5px 0 0 0;
+        line-height: 1.3;
+      }
+
+      /* --- Address Section (Bill To / Ship To) --- */
+      .address-section {
+        padding-top: 20px;
+      }
+
+      .address-header {
+        background-color: var(--header-bg);
+        padding: 2px 8px;
+        font-weight: bold;
+        text-align: left;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .address-details {
+        padding: 10px 8px;
+      }
+
+      .address-details p {
+        margin: 0 0 2px 0;
+        line-height: 1.3;
+      }
+
+      .address-details .name {
+        font-weight: bold;
+      }
+
+      /* --- Items Table Section --- */
+      .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+        font-size: 9px;
+        line-height: 1.2;
+      }
+
+      .items-table thead th {
+        font-weight: bold;
+        text-align: left;
+        padding: 4px;
+        vertical-align: middle;
+        font-size: 9.5px;
+        background-color: var(--header-bg);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .items-table tbody td {
+        padding: 2px;
+        border-bottom: 1px solid var(--header-bg);
+        vertical-align: top;
+        font-size: 9px;
+        overflow-wrap: break-word;
+        /* Great for long text without spaces */
+        word-break: break-all;
+        /* More aggressive breaking if needed */
+      }
+
+      .items-table .text-right {
+        text-align: right;
+      }
+
+      .items-table .text-center {
+        text-align: center;
+      }
+
+      .items-table thead .igst-header {
+        text-align: center;
+        padding: 0px;
+        background-color: var(--header-bg);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .items-table thead .igst-subheader th {
+        border-top: 1px solid #000;
+        background-color: var(--header-bg);
+        padding: 0px 2px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .items-table .product-description {
+        font-size: 8px;
+        line-height: 1.1;
+      }
+
+      .items-table .product-name {
+        font-weight: bold;
+        font-size: 9px;
+      }
+
+      /* --- Total in words and Summary Section --- */
+      .summary-section {
+        margin-top: 10px;
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .total-in-words {
+        background-color: var(--header-bg);
+        padding: 8px;
+        font-weight: bold;
+        font-size: 11px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .total-words-content {
+        padding: 10px 8px;
+        font-size: 11px;
+      }
+
+      .summary-totals {
+        padding: 4px 0px 0px 8px;
+        text-align: right;
+      }
+
+      .summary-totals table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .summary-totals td {
+        padding: 3px 0;
+        font-size: 11px;
+      }
+
+      .summary-totals .total-row td {
+        font-weight: bold;
+        padding: 5px;
+        background-color: var(--header-bg);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* --- Footer Section: Terms, IRN (Compact Version) --- */
+      .footer-section {
+        margin-top: 20px;
+      }
+
+      .terms-conditions {
+        font-size: 8px;
+        /* Reduced font size */
+        line-height: 1.3;
+        /* Tightened line spacing */
+        color: #333;
+        margin-top: 20px;
+      }
+
+      .terms-conditions h3 {
+        font-size: 10px;
+        /* Reduced heading size */
+        font-weight: bold;
+        margin: 0 0 5px 0;
+        padding: 0;
+      }
+
+      .terms-conditions ol {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .terms-conditions li {
+        margin-bottom: 2px;
+        /* Reduced space between items */
+      }
+
+      .footer-divider {
+        border: 0;
+        border-top: 1px solid #ccc;
+        margin: 15px 0;
+      }
+
+      .irn-details-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .irn-details-table .qr-code-cell {
+        width: 25%;
+        vertical-align: top;
+      }
+
+      .irn-details-table .irn-info-cell {
+        width: 75%;
+        vertical-align: top;
+        padding-left: 20px;
+      }
+
+      .qr-code-box {
+        border: 1px solid #999;
+        padding: 25px 10px;
+        text-align: center;
+        font-size: 10px;
+        /* Reduced font size */
+        color: #555;
+        min-height: 80px;
+        /* Made the box smaller */
+        box-sizing: border-box;
+      }
+
+      .irn-info-cell p {
+        margin: 0 0 4px 0;
+        /* Reduced space between items */
+        font-size: 10px;
+        /* Reduced font size */
+        font-weight: bold;
+      }
+      
+
+
+      /* --- Print-specific styles --- */
+      @media print {
+        body {
+          background-color: #fff;
+        }
+
+        .invoice-box {
+          width: 100%;
+          min-height: auto;
+          margin: 0;
+          padding: 0;
+          border: none;
+          box-shadow: none;
+        }
+
+        /* Ensure backgrounds print */
+        .address-header,
+        .items-table thead th,
+        .total-in-words,
+        .summary-totals .total-row td {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          background-color: var(--header-bg) !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="invoice-box">
+      <!-- Top Section Table -->
+      <!-- TODO:: This is header block which needs to repeat in every page   -->
+      <!-- header start -->
+      <table class="layout-table">
+        <tr>
+          <!-- Col 1: Logo & Company Address -->
+          <td style="width: 55%">
+            <table class="layout-table">
+              <tr>
+                <td style="width: 100px">
+                  <img src="/assets/system_images/joolaLogo.png"  alt="Joola Logo"class="logo" />
+                </td>
+                <td class="company-details">
+                  <p class="company-name">JOOLA INDIA PRIVATE LIMITED</p>
+                  <p>
+                    {{$data['client']->baddress }}<br />
+                    {{$data['client']->bcity}}<br />
+                    {{$data['client']->bstate}},{{$data['client']->bpostcode}}<br />
+                    {{$data['client']->bcountry}}
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <!-- Col 2: Contact Details -->
+          <td style="width: 33%" class="contact-details">
+            <p><b>Phone:</b>{{$data['client']->bphone}}</p>
+            <p><b>Email:</b> {{$data['client']->bemail}}</p>
+            <p><b>GSTIN:</b> {{ $data['client']->gstin}}</p>
+            <p><b>PAN:</b> {{$data['client']->pan_no}}</p>
+            <p><b>TAN:</b> {{$data['client']->tan_no}}</p>
+          </td>
+          <!-- Col 3: Invoice Title -->
+          <td style="width: 17%" class="invoice-title-cell">
+            <h2 class="invoice-title">TAX INVOICE</h2>
+          </td>
+        </tr>
+      </table>
+      <!-- header end -->
+
+      <!-- Middle Section Table -->
+      <table class="layout-table" style="margin-top: 24px">
+        <tr>
+          <!-- Left Column: Invoice & Customer Details -->
+          <td style="width: 50%">
+            <div class="invoice-details-block">
+              <table class="info-table">
+                <tr>
+                  <td class="label">Invoice No:</td>
+                  <td>{{$invoiceData['orderInvoice']}}</td>
+                </tr>
+                <tr>
+                  <td class="label">Invoice Date:</td>
+                  <td>{{$invoiceData['date']}}</td>
+                </tr>
+                <tr>
+                  <td class="label">Order No:</td>
+                  <td>{{$invoiceData['wmsOrderNo']}}</td>
+                </tr>
+                <tr>
+                  <td class="label">Order Date:</td>
+                  <td>{{$invoiceData['orderdate']}}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="customer-info-block">
+              <table class="info-table">
+                <tr>
+                  <td class="label">Customer Code:</td>
+                  <td>{{ $invoiceData['customer_code'] }}</td>
+                </tr>
+                <tr>
+                  <td class="label">Customer PO:</td>
+                  <td>{{ $invoiceData['customer_po'] }}</td>
+                </tr>
+              </table>
+            </div>
+          </td>
+          <!-- Right Column: Checkboxes & Return Address -->
+          <td style="width: 50%">
+            <div class="checkbox-container">
+              <p><span class="checkbox"></span> ORIGINAL FOR RECIPIENT</p>
+              <p><span class="checkbox"></span> DUPLICATE FOR TRANSPORTER</p>
+              <p><span class="checkbox"></span> TRIPLICATE FOR SUPPLIER</p>
+            </div>
+
+            <div class="return-address-block">
+              <b>Return to if undeliverable:</b>
+              <p>
+              {{$invoiceData['locationName']}}<br />
+              {{$invoiceData['address']}},<br />
+              {{$invoiceData['state']}}<br />
+              {{$invoiceData['country']}} - {{$invoiceData['postcode']}}<br />
+                India
+              </p>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Divider Line -->
+      <div class="divider"></div>
+      <!-- Address Section -->
+      <table class="layout-table address-section">
+        <!-- Payment/Shipping Info -->
+        <tr>
+          <td style="width: 50%; padding-right: 15px; padding-left: 7px">
+            <table class="info-table">
+              <tr>
+                <td class="label" style="width: 110px">Payment Terms:</td>
+                <td>{{ $invoiceData['payment_terms'] }}</td>
+              </tr>
+              <tr>
+                <td class="label">Inco Terms:</td>
+                <td>{{ $invoiceData['inco_terms'] }}</td>
+              </tr>
+              <tr>
+                <td class="label">Sales Person:</td>
+                <td>{{ $invoiceData['sales_person'] }}</td>
+              </tr>
+            </table>
+          </td>
+          <td style="width: 50%; padding-left: 24px">
+            <table class="info-table">
+              <tr>
+                <td class="label" style="width: 110px">Ship Via:</td>
+                <td>{{$invoiceData['packCourierName']}}</td>
+              </tr>
+              <tr>
+                <td class="label">Shipment Mode:</td>
+                <td>{{ $invoiceData['shipment_mode'] }}</td> 
+                
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- Spacer Row -->
+        <tr>
+          <td colspan="2" style="height: 16px"></td>
+        </tr>
+        <!-- Bill To / Ship To Headers & Details -->
+        <tr>
+          <td style="padding-right: 15px">
+            <table class="layout-table">
+              <thead>
+                <tr>
+                  <th class="address-header">Details Of Buyer (Bill To)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="address-details" style="padding-left: 9.5px">
+                    <p class="name">{{$invoiceData['bill_to_name']}}</p>
+                    <p>
+                    {{$invoiceData['bill_to_name']}}<br />
+                    {{Crypt::decrypt($invoiceData['bill_add1'])}}<br />
+                      {{$invoiceData['bill_city']}},{{$invoiceData['bill_state']}},{{$invoiceData['bill_pincode']}}<br />
+                      {{$invoiceData['bill_country']}}
+                    </p>
+                    <p><b>Email:</b> {{$invoiceData['bill_email']}} </p>
+                    <p><b>Phone:</b>{{Crypt::decrypt($invoiceData['bill_phone1'])}}</p>
+                    <p><b>GSTIN:</b>{{$invoiceData['gstin_no']}}</p>
+                  </td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </td>
+          <td style="padding-left: 15px">
+            <table class="layout-table">
+              <thead>
+                <tr>
+                  <th class="address-header">Details Of Consignee (Ship To)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="address-details" style="padding-left: 9.5px">
+                    <p class="name">{{$invoiceData['ship_to_name']}}</p>
+                    <p>
+                    {{$invoiceData['ship_to_name']}}<br />
+                        {{Crypt::decrypt($invoiceData['ship_add1'])}}<br>
+                        {{$invoiceData['ship_city']}}, {{$invoiceData['ship_state']}} ,{{$invoiceData['ship_pincode']}}<br />
+                      {{$invoiceData['ship_country']}}
+                    </p>
+                    <p><b>Email:</b> {{$invoiceData['ship_email']}}</p>
+                    <p><b>Phone:</b>{{Crypt::decrypt($invoiceData['ship_phone1'])}}</p>
+                    <p><b>GSTIN:</b>{{$invoiceData['ship_gst_no']}}</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <!-- Third Section table -->
+   
+      <table class="items-table">
+    <thead>
+        <tr>
+            <th rowspan="2" style="width: 35px">Sr. No</th>
+            <th rowspan="2" style="width: 70px">SKU</th>
+            <th rowspan="2">Description</th>
+            <th rowspan="2" style="width: 60px">HSN/SAC</th>
+            <th rowspan="2" style="width: 35px">Qty</th>
+            <th rowspan="2" style="width: 35px">UOM</th>
+            <th rowspan="2" class="text-right" style="width: 80px">MSRP</th>
+            <th rowspan="2" class="text-right" style="width: 60px">Discount Rate</th>
+            <th rowspan="2" class="text-right" style="width: 60px">Discount Amount</th>
+            <th rowspan="2" class="text-right" style="width: 80px">Taxable Value</th>
+
+            @if ($data['client']->bstate == $invoiceData['ship_state'])
+                <th colspan="2" class="igst-header">CGST</th>
+                <th colspan="2" class="igst-header">SGST</th>
+            @else
+                <th colspan="2" class="igst-header">IGST</th>
+            @endif
+
+            <th rowspan="2" class="text-right" style="width: 90px">Total</th>
+        </tr>
+        <tr class="igst-subheader">
+            @if ($data['client']->bstate == $invoiceData['ship_state'])
+                <th class="text-right" style="width: 45px">Rate</th>
+                <th class="text-right" style="width: 65px">Amount</th>
+                <th class="text-right" style="width: 45px">Rate</th>
+                <th class="text-right" style="width: 65px">Amount</th>
+            @else
+                <th class="text-right" style="width: 45px">Rate</th>
+                <th class="text-right" style="width: 65px">Amount</th>
+            @endif
+        </tr>
+    </thead>
+
+    <tbody>
+        <?php
+        $serialNumber = 1;
+        $subtotal = 0;
+        $totalTax = 0;
+        $grandTotal = 0;
+        ?>
+        @foreach($invoiceData['items'] as $k => $items)
+            @foreach($items as $item)
+                <?php
+                $discount = $item['discount_amount'] ?? 0;
+                $discountRate = $item['additional_discount_rate'] ?? 0;
+                $amount = ($item['mrp'] * $item['qty']) - $discount;
+                $taxableValue = $amount;
+
+                $itemCgst = 0;
+                $itemSgst = 0;
+                $itemIgst = 0;
+                $taxDiv   = 0;
+
+                if ($data['client']->bstate == $invoiceData['ship_state']) {
+                    // CGST + SGST
+                    $gstamount = $amount * $item['gst_percent_code'] / 100;
+                    $itemCgst = round($gstamount / 2, 2);
+                    $itemSgst = round($gstamount / 2, 2);
+                    $taxDiv   = ($item['gst_percent_code'] ?? 0) / 2;
+                    $totalTax += $itemCgst + $itemSgst;
+                } else {
+                    // IGST
+                    $itemIgst = round($amount * $item['gst_percent_code'] / 100, 2);
+                    $taxDiv   = $item['gst_percent_code'] ?? 0;
+                    $totalTax += $itemIgst;
+                }
+
+                $subtotal += $taxableValue;
+                $itemTotal = $taxableValue + $itemCgst + $itemSgst + $itemIgst;
+                $grandTotal += $itemTotal;
+                ?>
+                <tr>
+                    <td class="text-center">{{$serialNumber}}</td>
+                    <td>{{$item['sku']}}</td>
+                    <td>
+                        <div class="product-description">{{$item['description']}}</div>
+                    </td>
+                    <td>{{$item['hsn_code']}}</td>
+                    <td class="text-center">{{$item['qty']}}</td>
+                    <td class="text-center">{{$item['uom']}}</td>
+                    <td class="text-right">₹ {{$item['mrp']}}</td>
+                    <td class="text-right">{{$discountRate}}</td>
+                    <td class="text-right">{{$discount}}</td>
+                    <td class="text-right">₹ {{$taxableValue}}</td>
+
+                    @if ($data['client']->bstate == $invoiceData['ship_state'])
+                        <td class="text-right">{{$taxDiv}} %</td>
+                        <td class="text-right">₹ {{$itemCgst}}</td>
+                        <td class="text-right">{{$taxDiv}} %</td>
+                        <td class="text-right">₹ {{$itemSgst}}</td>
+                    @else
+                        <td class="text-right">{{$taxDiv}} %</td>
+                        <td class="text-right">₹ {{$itemIgst}}</td>
+                    @endif
+
+                    <td class="text-right">₹ {{$itemTotal}}</td>
+                </tr>
+                <?php $serialNumber++; ?>
+            @endforeach
+        @endforeach
+
+        <!-- Additional charge row -->
+        <tr>
+            <td colspan="3"><b>Additional charge</b></td>
+            <td></td><td></td><td></td><td></td><td></td><td></td>
+            <td class="text-right">₹ 0.00</td>
+            @if ($data['client']->bstate == $invoiceData['ship_state'])
+                <td class="text-right">0%</td>
+                <td class="text-right">₹ 0.00</td>
+                <td class="text-right">0%</td>
+                <td class="text-right">₹ 0.00</td>
+            @else
+                <td class="text-right">0%</td>
+                <td class="text-right">₹ 0.00</td>
+            @endif
+            <td class="text-right">₹ {{ $item['other_charges1'] ?? 0 }}</td>
+        </tr>
+    </tbody>
+</table>
+
+
+        @php
+            $formatter = new \NumberFormatter('en', \NumberFormatter::SPELLOUT);
+
+            $amount = $grandTotal;
+            $rupees = floor($amount);
+            $paise  = round(($amount - $rupees) * 100);
+
+            $words = ucfirst($formatter->format($rupees)) . ' Rupees';
+            if ($paise > 0) {
+                $words .= ' and ' . $formatter->format($paise) . ' Paise';
+            }
+            $words .= ' Only';
+        @endphp
+      <!-- Total in words and Summary Section -->
+      <table class="summary-section">
+        <tr>
+          <!-- Full width Total in words section -->
+          <td colspan="2">
+            <table class="layout-table" style="width: 100%">
+              <thead>
+                <tr style="text-align: left">
+                  <th class="total-in-words">Total in words</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="text-indent: 8px">
+                  <td class="total-words-content">
+                  {{ $words }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <!-- Empty left space and Summary totals on right -->
+          <td style="width: 50%"></td>
+          <td style="width: 50%; vertical-align: top">
+            <div class="summary-totals">
+              <table style="width: 100%">
+                <tr>
+                  <td style="text-align: right; padding-right: 20px">
+                    <strong>Subtotal</strong>
+                  </td>
+                  <td class="text-right" style="width: 100px">
+                    <strong>₹ {{ number_format($subtotal, 2) }}</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="text-align: right; padding-right: 20px">
+                    <strong>Tax</strong>
+                  </td>
+                  <td class="text-right" style="width: 100px">
+                    <strong>₹ {{ number_format($totalTax, 2) }}</strong>
+                  </td>
+                </tr>
+                <tr class="total-row">
+                  <td style="text-align: right; padding-right: 20px">
+                    <strong>Total</strong>
+                  </td>
+                  <td class="text-right" style="width: 100px">
+                    <strong>₹{{ number_format($grandTotal, 2) }}</strong>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Bank Details -->
+      <table class="layout-table" style="margin-top: 6px">
+        <tr>
+          <td style="width: 100%">
+            <table class="layout-table" style="width: 100%">
+              <thead>
+                <tr style="text-align: left">
+                  <th class="" style="font-size: 12px; font-weight: bold">
+                    Bank Details
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 0px">
+                    <table
+                      style="
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 10px;
+                      "
+                    >
+                      <tr>
+                        <td
+                          style="
+                            width: 150px;
+                            font-weight: bold;
+                            padding: 1px 5px 1px 0;
+                            vertical-align: top;
+                          "
+                        >
+                          Company Name:
+                        </td>
+                        <td style="padding: 1px 0">
+                        {{$data['client']->company_name }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style="
+                            font-weight: bold;
+                            padding: 1px 5px 1px 0;
+                            vertical-align: top;
+                          "
+                        >
+                          Account Number:
+                        </td>
+                        <td style="padding: 1px 0"> {{$data['client']->account_number }}</td>
+                      </tr>
+                      <tr>
+                        <td
+                          style="
+                            font-weight: bold;
+                            padding: 1px 5px 1px 0;
+                            vertical-align: top;
+                          "
+                        >
+                          Bank Name:
+                        </td>
+                        <td style="padding: 1px 0">{{$data['client']->bank_name }}</td>
+                      </tr>
+                      <tr>
+                        <td
+                          style="
+                            font-weight: bold;
+                            padding: 1px 5px 1px 0;
+                            vertical-align: top;
+                          "
+                        >
+                          Branch Address:
+                        </td>
+                        <td style="padding: 1px 0">
+                        {{$data['client']->branch_address }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style="
+                            font-weight: bold;
+                            padding: 1px 5px 1px 0;
+                            vertical-align: top;
+                          "
+                        >
+                          IFSC Code:
+                        </td>
+                        <td style="padding: 1px 0">{{$data['client']->ifsc_code }}</td>
+                      </tr>
+                      <tr>
+                        <td
+                          style="
+                            font-weight: bold;
+                            padding: 1px 5px 1px 0;
+                            vertical-align: top;
+                          "
+                        >
+                          Swift Code:
+                        </td>
+                        <td style="padding: 1px 0">{{$data['client']->swift_code }}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </table>
+
+      <!-- TODO:: putting second page directly inside here and including "margin-top: 50px;s" for showing UI in next page remove it when header footer repeating feature included -->
+      <!-- Second Page -->
+      <div style="margin-top: 50px">
+                            
+      <h3 class="pagebreak">DISCLAIMER</h3>
+      <p>Anything Contained in this document would not lead to any legal claim on the part of individual for any purpose.  </p>
+
+            <br><br>
+        <!-- Top Section Table (Same as first page) -->
+        <!-- TODO:: this should not be hardcoded just needs to repeat header and footer in all pages by itself -->
+        <table class="layout-table">
+          <tr>
+            <!-- Col 1: Logo & Company Address -->
+            <td style="width: 55%">
+              <table class="layout-table">
+                <tr>
+                  <td style="width: 100px">
+                    <img
+                    src="/assets/system_images/joolaLogo.png"
+                      alt="Joola Logo"
+                      class="logo"
+                    />
+                  </td>
+                  <td class="company-details">
+                    <p class="company-name">Joola India</p>
+                    <p>JOOLA INDIA PRIVATE LIMITED</p>
+                    <p>
+                    {{$data['client']->baddress }}<br />
+                    {{$data['client']->bcity}}<br />
+                    {{$data['client']->bstate}},{{$data['client']->bpostcode}}<br />
+                    {{$data['client']->bcountry}}
+                  </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <!-- Col 2: Contact Details -->
+            <td style="width: 33%" class="contact-details">
+            <p><b>Phone:</b>{{$data['client']->bphone}}</p>
+            <p><b>Email:</b> {{$data['client']->bemail}}</p>
+            <p><b>GSTIN:</b> {{ $data['client']->gstin}}</p>
+            <p><b>PAN:</b> {{$data['client']->pan_no}}</p>
+            <p><b>TAN:</b> {{$data['client']->tan_no}}</p>
+            </td>
+            <!-- Col 3: Invoice Title -->
+            <td style="width: 17%" class="invoice-title-cell">
+              <h2 class="invoice-title">TAX INVOICE</h2>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Terms and Conditions -->
+        <div class="terms-conditions">
+          <h3>Terms and Conditions</h3>
+          <ol>
+            <li>
+              Any difference in this invoice from what has been paid to JOOLA
+              will be accounted as Credit/Debit under your ledger and will be
+              adjustable in your next transaction.
+            </li>
+            <li>
+              This is a GST-compliant invoice and the Goods and Services Tax is
+              applicable as per the prevailing rates.
+            </li>
+            <li>
+              Warranty registrations and transit loss management are not under
+              JOOLA. If the customer arranges reverse pickup for consignments.
+            </li>
+            <li>Any disputes are subject to Bengaluru jurisdiction only.</li>
+            <li>
+              The above invoice shows a breakdown of CGST, SGST/UGST, or IGST
+              based on the place of supply.
+            </li>
+            <li>
+              HSN/SAC codes used are as per our Global Standards. Any
+              discrepancies should be reported to our accounts department.
+            </li>
+            <li>
+              For any queries related to this invoice or GST compliance, please
+              contact accounts@joola.in
+            </li>
+            <li>
+              This is a computer-generated invoice and does not require a
+              signature.
+            </li>
+            <li>E. & O.E.</li>
+          </ol>
+        </div>
+
+        <hr class="footer-divider" />
+
+        <table class="irn-details-table">
+          <tr>
+            <td class="qr-code-cell">
+              <div class="qr-code-box">No Data Found</div>
+            </td>
+            <td class="irn-info-cell">
+              <p>IRN :{{$invoiceData['irn_no']}}</p>
+              <p>ACK No :{{$invoiceData['ack_no']}}</p>
+              <p>ACK Date : {{$invoiceData['ack_date']}}</p>
+              <p>Eway Bill No: {{$invoiceData['eway_bill_no']}}</p>
+            </td>
+          </tr>
+        </table>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+         <br> <br>
+
+         <div class="terms-conditions ">
+          <h3 style="font-size: 11px;font-weight: 400;">DISCLAIMER</h3>
+          <p style="font-size: 12px;">Anything Contained in this document would not lead to any legal claim on the part of individual for any purpose.  </p>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
+
+<script language="javascript" type="text/javascript">
+// function myFunction()
+// {
+//     setTimeout(function()
+//     {
+//          window.close();
+//      },100);
+// }
+
+// setTimeout(function()
+// {
+//     window.print();
+// },500);
+
+</script>
